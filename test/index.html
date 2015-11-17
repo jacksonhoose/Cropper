@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script src="../bower_components/fabric.js/dist/fabric.js"></script>
+        <script src="../dist/index.js"></script>
+    </head>
+    <body>
+        <div id="container">
+        </div>
+        <form>
+            <input type="file" name="file" />
+        </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', onReady);
+            function onReady(e){
+                document.querySelector('input[type="file"]').addEventListener('change', function(e){
+                    var file = e.target.files[0];
+
+                    var reader = new FileReader();
+                    reader.addEventListener('load', function(e){
+                        var container = document.querySelector('#container');
+                        var img = document.createElement('img');
+                        img.setAttribute('src', e.target.result);
+                        container.appendChild(img);
+
+                        window.crop = new Cropper({
+                            height: 500,
+                            width: 700,
+                            container: container
+                        });
+                        crop.render();
+                        crop.setImage(img);
+
+                        var frag = document.createDocumentFragment();
+                        ['crop', 'rotate'].forEach(function(button){
+                            var b = document.createElement('button');
+                            b.innerText = button;
+                            b.setAttribute('data-' + button, true);
+                            frag.appendChild(b);
+                            b.addEventListener('click', function(e){ 
+                                switch(e.target.innerText){
+                                    case 'crop':
+                                        crop.crop();
+                                        break;
+                                    case 'rotate':
+                                        crop.rotate();
+                                        break;
+                                }
+                            });
+                        });
+                        container.appendChild(frag);
+                    });
+                    reader.readAsDataURL(file);
+                });
+            }
+        </script>
+    </body>
+</html>

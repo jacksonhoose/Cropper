@@ -1,0 +1,41 @@
+<html>
+<head>
+    <script src="./bower_components/fabric.js/dist/fabric.js"></script>
+    <script src="./index.js"></script>
+</head>
+<body>
+    <div id="container">
+        <!-- <img src="./moondog.jpg" /> -->
+    </div>
+    <form>
+        <input type="file" name="file" />
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', onReady);
+        function onReady(e){
+            document.querySelector('input[type="file"]')
+                    .addEventListener('change', function(e){
+
+                var file = e.target.files[0];
+                var reader = new FileReader();
+                reader.addEventListener('load', function(e){
+                    let src = e.result.src;
+                    let img = document.createElement('image');
+                    let container = document.querySelector('#container');
+                    img.addAttribute('src', src);
+                    container.appendChild(img);
+
+                    window.crop = new CanvasWrapper({
+                        height: 500,
+                        width: 700,
+                        container: container
+                    });
+                    crop.render();
+                    crop.setImage(img);
+                });
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+</body>
+</html>
